@@ -20,20 +20,22 @@ fi
 #Per això s'utilitza la comanda "comm" i es mostra només la primera columna
 #(que correspon als elements que només es troben a la primera entrada)
 echo "Fitxers només a $DIR1:"
-comm -23 <(ls "$DIR1" | sort) <(ls "$DIR2" | sort)
+comm -23 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort)
 
 #Es fa el mateix pels fitxers que només són al segon directori
 echo "Fitxers només a $DIR2:"
-comm -13 <(ls "$DIR1" | sort) <(ls "$DIR2" | sort)
+comm -13 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort)
 
 #Per a cada fitxer de dir1
-for file in $(ls "$DIR1"); do
-   #Si aquest fitxer existeix a dir 2 (i no es un directori)
-   if [ -f "$DIR2/$file" ]; then
+for file in $(find "$DIR1" -type f -printf "%f\n"); do
+   #Si aquest fitxer existeix a dir 2 (i no es un directori) 
+   pathFileDir2=$(find "$DIR2" -name $file -print)	#Es busca el fitxer a dir2
+   if [ "$pathFileDir2" != "" ]; then			#Si find no mostra res es que no s'ha trobat
       #Es compara si el contingut dels fitxers son iguals
       #Si son iguals "diff" retorna 0 (Éxit) per tant al negar-ho (!) no s'executa el bloc if
       #Si son diferents "diff" retorna 1 (Fracás) i al negar-ho (!) la condició es Vertadera
-      if ! diff -q "$DIR1/$file" "$DIR2/$file" > /dev/null; then
+      pathFileDir1=$(find $DIR1 -name $file -print)
+      if ! diff -q $pathFileDir1 $pathFileDir2 > /dev/null; then
 	 #S'indica que els fitxers tenen el mateix nom pero contingut diferent
          echo "Fitxer diferent: $file"
       fi
