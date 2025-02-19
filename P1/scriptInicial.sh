@@ -62,11 +62,19 @@ for file in $(find "$DIR1" -type f -printf "%f\n"); do
 		echo -e "$liniesDiff"
 	 fi
 	 if [ $functSimilitud -eq 0 ]; then	 
-		 numLines1=$(wc -l < "$pathFileDir1")
-		 numLines2=$(wc -l < "$pathFileDir2")
-		 numLinesDiff=$(echo "$liniesDiff" | wc -l)
-		 echo $numLines1 $numLines2 $numLinesDiff
+		 numLinies1=$(wc -l < "$pathFileDir1")
+		 numLinies2=$(wc -l < "$pathFileDir2")
+		 numLiniesDiff=$(echo -e "$liniesDiff" | wc -l)
+		 similitud=$(( 100 - (numLiniesDiff * 100 / (numLinies1 + numLinies2) / 2) ))
+		 if [ $similitud -ge 90 ]; then fitsSimilars+="$file\n"; fi
+		 echo "Similitud: $similitud%"
 	 fi
       fi
    fi
 done
+
+if [ $functSimilitud -eq 0 ]; then
+	echo -e "\nFitxers de noms iguals amb una similitud major o igual 90%"
+        echo -e "$fitsSimilars"
+fi	
+
