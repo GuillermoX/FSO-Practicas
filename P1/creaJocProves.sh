@@ -18,6 +18,7 @@ ls JocDeProves/dir1 > JocDeProves/dir1/fit1
 ls JocDeProves/dir1 > JocDeProves/dir1/fit2
 ls JocDeProves/dir1 > JocDeProves/dir1/fit3
 ls JocDeProves/dir1 > JocDeProves/dir1/fit4
+ls JocDeProves/dir1 > JocDeProves/dir1/fitExt1.txt
 #Afegir un subdirectori amb fitxers al dir 1
 mkdir JocDeProves/dir1/dir1_1
 touch JocDeProves/dir1/dir1_1/fit7
@@ -36,10 +37,12 @@ ls JocDeProves/dir2 > JocDeProves/dir2/fit6
 #Copiar fitxers del directori 1 al 2
 cp JocDeProves/dir1/fit1 JocDeProves/dir2
 cp JocDeProves/dir1/fit4 JocDeProves/dir2
+cp JocDeProves/dir1/fitExt1.txt JocDeProves/dir2
 cp JocDeProves/dir1/dir1_1/fit7 JocDeProves/dir2
 #Canviar el contingut de fitxers copiats de dir1
 ls JocDeProves/dir2 > JocDeProves/dir2/fit1
 ls JocDeProves/dir2 > JocDeProves/dir2/fit7
+ls JocDeProves/dir2 > JocDeProves/dir2/fitExt1.txt
 #Afegir un subdirectori amb fixers al dir 2
 mkdir JocDeProves/dir2/dir2_1
 touch JocDeProves/dir2/dir2_1/fit9

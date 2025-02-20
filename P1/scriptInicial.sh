@@ -16,13 +16,26 @@ shift 2
 functLiniesDiff=1
 functSimilitud=1
 functExcluirExtensio=1
+functIgnoraSubdir=1
 #Es comprova quines opcions s'han indicat
-while getopts "dse:" opt; do
+while getopts "dse:i:" opt; do
 	case $opt in
 		d) functLiniesDiff=0;;
 		s) functSimilitud=0;;
 		e) functExcluirExtensio=0
-		   extensions=$(echo "$OPTARG" | tr "," " ");;
+		   extensions=$(echo $OPTARG | tr "," " " );;
+		i) functIgnoraSubdir=0
+		   dirIgnorar=$(echo $OPTARG | cut -f1 -d" ")	#Asegurem que només s'ignori un únic subdirectori	   
+		   pathDir1Ignorar=$(find $DIR1 -name $dirIgnorar -print)
+		   pathDir2Ignorar=$(find $DIR2 -name $dirIgnorar -print)
+		   if [ "$pathDir1Ignorar" != "" ]; then
+			echo "Subdirectori ignorat: $pathDir1Ignorar"
+		   	filesIgnorar1=$(find "$pathDir1Ignorar" -type f -printf "%f\n")
+		   fi
+		   if [ "$pathDir2Ignorar" != "" ]; then
+			echo "Subdirectori ignorat: $pathDir2Ignorar"
+		   	filesIgnorar2=$(find "$pathDir2Ignorar" -type f -printf "%f\n")
+		   fi;;
 		?) echo Opció incorrecta; exit 1;;
 	esac
 done
@@ -39,6 +52,11 @@ fi
 #(que correspon als elements que només es troben a la primera entrada)
 echo "Fitxers només a $DIR1:"
 fitxersDir=$(comm -23 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort))
+#Si hi ha un directori a ignorar no es mostren els fitxer d'aquest
+if [ $functIgnoraSubdir -eq 0 ] && [ "$pathDir1Ignorar" != "" ]; then
+	fitxersDir=$(comm -23 <(echo -e "$fitxersDir") <(echo -e "$filesIgnorar1" | sort))
+fi
+
 #Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 1
 if [ $functExcluirExtensio -eq 0 ]; then
 	for ext in $extensions; do
@@ -50,6 +68,10 @@ echo -e "$fitxersDir"
 #Es fa el mateix pels fitxers que només són al segon directori
 echo "Fitxers només a $DIR2:"
 fitxersDir=$(comm -13 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort))
+#Si hi ha un directori a ignorar no es mostren els fitxer d'aquest
+if [ $functIgnoraSubdir -eq 0 ] && [ "$pathDir2Ignorar" != "" ]; then
+	fitxersDir=$(comm -23 <(echo -e "$fitxersDir") <(echo -e "$filesIgnorar2" | sort))
+fi
 #Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 2
 if [ $functExcluirExtensio -eq 0 ]; then
 	for ext in $extensions; do
@@ -58,12 +80,30 @@ if [ $functExcluirExtensio -eq 0 ]; then
 fi
 echo -e "$fitxersDir"
 
-#Per a cada fitxer de dir1
 fitsSimilars=""
-for file in $(find "$DIR1" -type f -printf "%f\n"); do
+#S'obtenen tots els fitxers dins de dir1
+files=$(find "$DIR1" -type f -printf "%f\n")
+#En cas que hi hagi extensions a ignorar s'eliminen de la llista de fitxers
+if [ $functExcluirExtensio -eq 0 ]; then
+	for ext in $extensions; do
+		files=$(echo -e "$files" | grep -v "$ext")
+	done
+fi
+
+#Si hi ha un subdirectori a ignorar s'eliminen els fitxers que es trobin dins
+if [ $functIgnoraSubdir -eq 0 ]; then
+	files=$(comm -23 <(echo -e "$files" | sort) <(echo -e "$filesIgnorar1" | sort))
+fi
+
+#Per a cada fitxer de dir1
+for file in $files; do
    #Si aquest fitxer existeix a dir 2 (i no es un directori) 
    pathFileDir2=$(find "$DIR2" -name $file -print)	#Es busca el fitxer a dir2
-   if [ "$pathFileDir2" != "" ]; then			#Si find no mostra res es que no s'ha trobat
+   #Si hi ha un subdirectori a ignorar es comprova que el fitxer no hi sigui dins
+   if [ $functIgnoraSubdir -eq 0 ]; then
+	   pathFileDir2=$(echo "$pathFileDir2" | grep -v /"$dirIgnorar")
+   fi
+   if [ "$pathFileDir2" != "" ]; then		#Si la variable es buida vol dir que no s'ha trobat o que está a un subdirectori ignorat
       #Es compara si el contingut dels fitxers son iguals
       #Si son iguals "diff" retorna 0 (Éxit) per tant al negar-ho (!) no s'executa el bloc if
       #Si son diferents "diff" retorna 1 (Fracás) i al negar-ho (!) la condició es Vertadera
