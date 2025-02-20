@@ -100,7 +100,7 @@ for file in $files; do
    #Si aquest fitxer existeix a dir 2 (i no es un directori) 
    pathFileDir2=$(find "$DIR2" -name $file -print)	#Es busca el fitxer a dir2
    #Si hi ha un subdirectori a ignorar es comprova que el fitxer no hi sigui dins
-   if [ $functIgnoraSubdir -eq 0 ]; then
+   if [ $functIgnoraSubdir -eq 0 ] && [ "$pathDir2Ignorar" != "" ]; then
 	   pathFileDir2=$(echo "$pathFileDir2" | grep -v /"$dirIgnorar")
    fi
    if [ "$pathFileDir2" != "" ]; then		#Si la variable es buida vol dir que no s'ha trobat o que está a un subdirectori ignorat
