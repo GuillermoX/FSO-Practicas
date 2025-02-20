@@ -11,6 +11,8 @@ touch JocDeProves/dir1/fit1
 touch JocDeProves/dir1/fit2
 touch JocDeProves/dir1/fit3
 touch JocDeProves/dir1/fit4
+touch JocDeProves/dir1/fitExt1.txt
+touch JocDeProves/dir1/fitExt2.c
 #Afegir contingut als fitxers de dir1
 ls JocDeProves/dir1 > JocDeProves/dir1/fit1
 ls JocDeProves/dir1 > JocDeProves/dir1/fit2
@@ -20,6 +22,7 @@ ls JocDeProves/dir1 > JocDeProves/dir1/fit4
 mkdir JocDeProves/dir1/dir1_1
 touch JocDeProves/dir1/dir1_1/fit7
 touch JocDeProves/dir1/dir1_1/fit8
+touch JocDeProves/dir1/dir1_1/fitExt3.txt
 #Afegir contingut als fitxers de dir1/dir1_1
 ls JocDeProves/dir1 > JocDeProves/dir1/dir1_1/fit7
 ls JocDeProves/dir1 > JocDeProves/dir1/dir1_1/fit8

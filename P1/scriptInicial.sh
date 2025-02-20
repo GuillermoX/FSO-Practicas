@@ -15,11 +15,14 @@ shift 2
 #Es presuposa que totes les opcions addicionals están desactivades
 functLiniesDiff=1
 functSimilitud=1
+functExcluirExtensio=1
 #Es comprova quines opcions s'han indicat
-while getopts "ds" opt; do
+while getopts "dse:" opt; do
 	case $opt in
 		d) functLiniesDiff=0;;
 		s) functSimilitud=0;;
+		e) functExcluirExtensio=0
+		   extensions=$(echo "$OPTARG" | tr "," " ");;
 		?) echo Opció incorrecta; exit 1;;
 	esac
 done
@@ -35,11 +38,25 @@ fi
 #Per això s'utilitza la comanda "comm" i es mostra només la primera columna
 #(que correspon als elements que només es troben a la primera entrada)
 echo "Fitxers només a $DIR1:"
-comm -23 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort)
+fitxersDir=$(comm -23 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort))
+#Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 1
+if [ $functExcluirExtensio -eq 0 ]; then
+	for ext in $extensions; do
+		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext")
+	done
+fi
+echo -e "$fitxersDir"
 
 #Es fa el mateix pels fitxers que només són al segon directori
 echo "Fitxers només a $DIR2:"
-comm -13 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort)
+fitxersDir=$(comm -13 <(find "$DIR1" -type f -printf "%f\n" | sort) <(find "$DIR2" -type f -printf "%f\n" | sort))
+#Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 2
+if [ $functExcluirExtensio -eq 0 ]; then
+	for ext in $extensions; do
+		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext")
+	done
+fi
+echo -e "$fitxersDir"
 
 #Per a cada fitxer de dir1
 fitsSimilars=""
