@@ -43,6 +43,8 @@ cp JocDeProves/dir1/dir1_1/fit7 JocDeProves/dir2
 ls JocDeProves/dir2 > JocDeProves/dir2/fit1
 ls JocDeProves/dir2 > JocDeProves/dir2/fit7
 ls JocDeProves/dir2 > JocDeProves/dir2/fitExt1.txt
+#Canviar els permisos de fitxers copiats de dir1
+chmod u+x JocDeProves/dir2/fit1
 #Afegir un subdirectori amb fixers al dir 2
 mkdir JocDeProves/dir2/dir2_1
 touch JocDeProves/dir2/dir2_1/fit9
@@ -56,5 +58,7 @@ cp JocDeProves/dir2/fit5 JocDeProves/dir2/dir2_1
 cp JocDeProves/dir1/fit2 JocDeProves/dir2/dir2_1
 #Cambiar el contingut d'algun fitxer copiat de dir1 en dir2_1
 ls JocDeProves/dir2 > JocDeProves/dir2/dir2_1/fit2
+#Cambiar permisos d'algun fitxer de dir1 en dir2_1
+chmod 007 JocDeProves/dir2/dir2_1/fit2
 
 

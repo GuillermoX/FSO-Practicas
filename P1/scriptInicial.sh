@@ -17,8 +17,9 @@ functLiniesDiff=1
 functSimilitud=1
 functExcluirExtensio=1
 functIgnoraSubdir=1
+functComparaPermis=1
 #Es comprova quines opcions s'han indicat
-while getopts "dse:i:" opt; do
+while getopts "dse:i:p" opt; do
 	case $opt in
 		d) functLiniesDiff=0;;
 		s) functSimilitud=0;;
@@ -36,6 +37,7 @@ while getopts "dse:i:" opt; do
 			echo "Subdirectori ignorat: $pathDir2Ignorar"
 		   	filesIgnorar2=$(find "$pathDir2Ignorar" -type f -printf "%f\n")
 		   fi;;
+		p) functComparaPermis=0;;
 		?) echo Opció incorrecta; exit 1;;
 	esac
 done
@@ -110,7 +112,7 @@ for file in $files; do
       pathFileDir1=$(find $DIR1 -name $file -print)
       if ! diff -q $pathFileDir1 $pathFileDir2 > /dev/null; then
 	 #S'indica que els fitxers tenen el mateix nom pero contingut diferent
-         echo "Fitxer diferent: $file"
+         echo "Contingut diferent en fitxers $file"
 	 if [ $functLiniesDiff -eq 0 ] || [ $functSimilitud -eq 0 ]; then
 	 	liniesDiff=$(diff --suppress-common-lines $pathFileDir1 $pathFileDir2 | grep -E "<|>" | sed -e 's/</dir 1:/g' -e 's/>/dir 2:/g')
 	 fi
@@ -126,6 +128,14 @@ for file in $files; do
 		 if [ $similitud -ge 90 ]; then fitsSimilars+="$file\n"; fi
 		 echo "Similitud: $similitud%"
 	 fi
+      fi
+      #Si está activada la comparació de permisos
+      if [ $functComparaPermis -eq 0 ]; then
+              diffPermis=$(diff --normal <(ls -l $pathFileDir1 | cut -c1-10) <(ls -l $pathFileDir2 | cut -c1-10) | grep -E "<|>" | \
+      		      sed -e 's/</- permisos dir 1:/g' -e 's/>/- permisos dir 2:/g')
+	      if [ "$diffPermis" != "" ]; then
+		      echo -e "Permisos diferents en fitxers $file:\n$diffPermis"
+	      fi
       fi
    fi
 done
