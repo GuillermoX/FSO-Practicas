@@ -1,0 +1,67 @@
+Fitxers només a JocDeProves/dir1:
+fit3
+fit8
+fitExt2.c
+fitExt3.txt
+Fitxers només a JocDeProves/dir2:
+fit10
+fit5
+fit5
+fit6
+fit9
+Contingut diferent en fitxers fit1
+Diferències en els fitxers:
+dir 1: dir1_1
+dir 2: dir2_1
+dir 1: fit2
+dir 1: fit3
+dir 2: fit5
+dir 2: fit6
+dir 2: fit7
+dir 1: fitExt2.c
+Similitud: 72%
+Permisos diferents en fitxers fit1:
+- permisos dir 1: -rw-r--r--
+- permisos dir 2: -rwxr--r--
+Contingut diferent en fitxers fit2
+Diferències en els fitxers:
+dir 1: dir1_1
+dir 2: dir2_1
+dir 1: fit2
+dir 1: fit3
+dir 2: fit5
+dir 2: fit6
+dir 2: fit7
+dir 1: fitExt2.c
+Similitud: 72%
+Permisos diferents en fitxers fit2:
+- permisos dir 1: -rw-r--r--
+- permisos dir 2: -rwx---rwx
+Permisos diferents en fitxers fit4:
+- permisos dir 1: -rw-r--r--
+- permisos dir 2: -rwxr--r--
+Contingut diferent en fitxers fitExt1.txt
+Diferències en els fitxers:
+dir 1: dir1_1
+dir 2: dir2_1
+dir 1: fit2
+dir 1: fit3
+dir 2: fit5
+dir 2: fit6
+dir 2: fit7
+dir 1: fitExt2.c
+Similitud: 72%
+Contingut diferent en fitxers fit7
+Diferències en els fitxers:
+dir 1: dir1_1
+dir 2: dir2_1
+dir 1: fit2
+dir 1: fit3
+dir 2: fit5
+dir 2: fit6
+dir 2: fit7
+dir 1: fitExt2.c
+Similitud: 72%
+
+Fitxers de noms iguals amb una similitud major o igual 90%
+

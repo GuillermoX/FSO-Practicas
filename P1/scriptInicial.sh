@@ -18,8 +18,9 @@ functSimilitud=1
 functExcluirExtensio=1
 functIgnoraSubdir=1
 functComparaPermis=1
+functOutputFile=1
 #Es comprova quines opcions s'han indicat
-while getopts "dse:i:p" opt; do
+while getopts "dse:i:po:" opt; do
 	case $opt in
 		d) functLiniesDiff=0;;
 		s) functSimilitud=0;;
@@ -38,9 +39,17 @@ while getopts "dse:i:p" opt; do
 		   	filesIgnorar2=$(find "$pathDir2Ignorar" -type f -printf "%f\n")
 		   fi;;
 		p) functComparaPermis=0;;
+		o) functOutputFile=0
+		   outputFile=$OPTARG
+		   echo $outputFile;;
 		?) echo Opció incorrecta; exit 1;;
 	esac
 done
+
+#Es redirecciona la sortida en cas d'haver-ho indicat
+if [ $functOutputFile -eq 0 ]; then
+	exec > $outputFile
+fi
 
 #Es comprova si els parámetres son directoris
 if [ ! -d "$DIR1" ] || [ ! -d "$DIR2" ]; then
