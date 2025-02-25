@@ -110,10 +110,12 @@ fi
 for file in $files; do
    #Si aquest fitxer existeix a dir 2 (i no es un directori) 
    pathFileDir2=$(find "$DIR2" -name $file -print)	#Es busca el fitxer a dir2
+
    #Si hi ha un subdirectori a ignorar es comprova que el fitxer no hi sigui dins
    if [ $functIgnoraSubdir -eq 0 ] && [ "$pathDir2Ignorar" != "" ]; then
 	   pathFileDir2=$(echo "$pathFileDir2" | grep -v /"$dirIgnorar")
    fi
+
    if [ "$pathFileDir2" != "" ]; then		#Si la variable es buida vol dir que no s'ha trobat o que está a un subdirectori ignorat
       #Es compara si el contingut dels fitxers son iguals
       #Si son iguals "diff" retorna 0 (Éxit) per tant al negar-ho (!) no s'executa el bloc if
@@ -138,6 +140,7 @@ for file in $files; do
 		 echo "Similitud: $similitud%"
 	 fi
       fi
+
       #Si está activada la comparació de permisos
       if [ $functComparaPermis -eq 0 ]; then
               diffPermis=$(diff --normal <(ls -l $pathFileDir1 | cut -c1-10) <(ls -l $pathFileDir2 | cut -c1-10) | grep -E "<|>" | \
