@@ -71,7 +71,7 @@ fi
 #Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 1
 if [ $functExcluirExtensio -eq 0 ]; then
 	for ext in $extensions; do
-		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext")
+		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext$")
 	done
 fi
 echo -e "$fitxersDir"
@@ -86,7 +86,7 @@ fi
 #Si está activada la opció d'excluir extensions, per cada extensió es filtra la llista de fitxers unics del directori 2
 if [ $functExcluirExtensio -eq 0 ]; then
 	for ext in $extensions; do
-		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext")
+		fitxersDir=$(echo -e "$fitxersDir" | grep -v "$ext$")
 	done
 fi
 echo -e "$fitxersDir"
@@ -97,7 +97,7 @@ files=$(find "$DIR1" -type f -printf "%f\n")
 #En cas que hi hagi extensions a ignorar s'eliminen de la llista de fitxers
 if [ $functExcluirExtensio -eq 0 ]; then
 	for ext in $extensions; do
-		files=$(echo -e "$files" | grep -v "$ext")
+		files=$(echo -e "$files" | grep -v "$ext$")
 	done
 fi
 
@@ -109,7 +109,7 @@ fi
 #Per a cada fitxer de dir1
 for file in $files; do
    #Si aquest fitxer existeix a dir 2 (i no es un directori) 
-   pathFileDir2=$(find "$DIR2" -name $file -print)	#Es busca el fitxer a dir2
+   pathFileDir2=$(find "$DIR2" -name $file -print | head -1)	#Es busca el fitxer a dir2
 
    #Si hi ha un subdirectori a ignorar es comprova que el fitxer no hi sigui dins
    if [ $functIgnoraSubdir -eq 0 ] && [ "$pathDir2Ignorar" != "" ]; then
@@ -120,12 +120,12 @@ for file in $files; do
       #Es compara si el contingut dels fitxers son iguals
       #Si son iguals "diff" retorna 0 (Éxit) per tant al negar-ho (!) no s'executa el bloc if
       #Si son diferents "diff" retorna 1 (Fracás) i al negar-ho (!) la condició es Vertadera
-      pathFileDir1=$(find $DIR1 -name $file -print)
+      pathFileDir1=$(find $DIR1 -name $file -print | head -1)
       if ! diff -q $pathFileDir1 $pathFileDir2 > /dev/null; then
 	 #S'indica que els fitxers tenen el mateix nom pero contingut diferent
          echo "Contingut diferent en fitxers $file"
 	 if [ $functLiniesDiff -eq 0 ] || [ $functSimilitud -eq 0 ]; then
-	 	liniesDiff=$(diff --suppress-common-lines $pathFileDir1 $pathFileDir2 | grep -E "<|>" | sed -e 's/</dir 1:/g' -e 's/>/dir 2:/g')
+	 	liniesDiff=$(diff --suppress-common-lines -B -b $pathFileDir1 $pathFileDir2 | grep -E "<|>" | sed -e 's/</dir 1:/g' -e 's/>/dir 2:/g')
 	 fi
 	 if [ $functLiniesDiff -eq 0 ]; then
 	 	echo "Diferències en els fitxers:"
