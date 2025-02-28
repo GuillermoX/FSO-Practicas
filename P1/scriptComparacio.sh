@@ -132,15 +132,18 @@ for file in $files; do
 	 if [ $functLiniesDiff -eq 0 ] || [ $functSimilitud -eq 0 ]; then
 	 	liniesDiff=$(diff --suppress-common-lines -B -b $pathFileDir1 $pathFileDir2 | grep -E "<|>" | sed -e 's/</dir 1:/g' -e 's/>/dir 2:/g')
 	 fi
+	 #Si está activada la opció de diferències entre fitxers es mostren aquestes
 	 if [ $functLiniesDiff -eq 0 ]; then
 	 	echo "Diferències en els fitxers:"
 		echo -e "$liniesDiff"
 	 fi
+	 #Si está activada la opció de similitud entre fitxers es calcula per cada parella
 	 if [ $functSimilitud -eq 0 ]; then	 
 		 numLinies1=$(wc -l < "$pathFileDir1")
 		 numLinies2=$(wc -l < "$pathFileDir2")
 		 numLiniesDiff=$(echo -e "$liniesDiff" | wc -l)
 		 similitud=$(( 100 - (numLiniesDiff * 100 / (numLinies1 + numLinies2) / 2) ))
+		 #Si la similitud supera el 90% es guarda el nom del fitxer
 		 if [ $similitud -ge 90 ]; then fitsSimilars+="$file\n"; fi
 		 echo "Similitud: $similitud%"
 	 fi
@@ -157,8 +160,9 @@ for file in $files; do
    fi
 done
 
+#Si está activada la funció de similitud es mostren els fitxers amb similitud major o igual a 90%
 if [ $functSimilitud -eq 0 ]; then
-	echo -e "\nFitxers de noms iguals amb una similitud major o igual 90%"
+	echo -e "\nFitxers de noms iguals amb una similitud major o igual 90%:"
         echo -e "$fitsSimilars"
 fi	
 
